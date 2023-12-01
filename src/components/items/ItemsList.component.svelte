@@ -1,25 +1,36 @@
 <script lang="ts">
   import type { ItemInterface } from "../../models/items/Item.interface";
   import ItemComponent from "./children/Item.component.svelte";
+  import Loader from "../shared/Loader.component.svelte";
+
+  // expose loading property:
+  export let loading = false;
 
   export let items: ItemInterface[];
 
-  function onSelectItem(event: CustomEvent<{item: ItemInterface}>) {
-    const item = event.detail.item
-    item.selected = !item.selected
-    items = items
-    console.log('onSelectItem', item.id, item.selected)
-  }
+  // expose a property to pass our selectItem event to the parent component
+  export let selectItem: (event: CustomEvent<{ item: ItemInterface }>) => void;
 
+  // function onSelectItem(event: CustomEvent<{ item: ItemInterface }>) {
+  //   const item = event.detail.item;
+  //   item.selected = !item.selected;
+  //   items = items;
+  //   console.log("onSelectItem", item.id, item.selected);
+  // }
 </script>
 
 <div>
   <h3>My Items</h3>
-  <ul>
-    {#each items as item}
-    <ItemComponent item={item} on:selectItem={onSelectItem} />
-    {/each}
-  </ul>
+  {#if loading}
+    <Loader />
+  {/if}
+  {#if !loading}
+    <ul>
+      {#each items as item}
+        <ItemComponent {item} on:selectItem={selectItem} />
+      {/each}
+    </ul>
+  {/if}
 </div>
 
 <style>

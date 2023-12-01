@@ -58,14 +58,14 @@ export function useItemsStore(): ItemsStoreInterface {
             writableItemsStore.update((state) => {
                 const itemIndex = (state.items || []).findIndex(a => a.id === item.id)
                 if (itemIndex < 0) {
-                    console.warn("ItemStore: action: toggleItemSelected: Could not find inourt state");
+                    console.warn("ItemStore: action: toggleItemSelected: Could not find in our state");
 
                     return;
                 }
 
                 // toggle selected
                 state.items[itemIndex].selected = !state.items[itemIndex].selected;
-                //keep current loadin value
+                //keep current loading value
                 state.loading = state.loading;
                 return state;
             })
