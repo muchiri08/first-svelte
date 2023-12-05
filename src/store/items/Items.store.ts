@@ -6,6 +6,7 @@ import type {
     ItemsStoreGetterInterface
 } from './models';
 import type { ItemInterface } from '../../models/items/Item.interface';
+import { apiClient } from '../../api-client';
 
 const writableItemsStore = SvelteStore.writable<ItemsStateInterface>({
     loading: false,
@@ -24,33 +25,16 @@ export function useItemsStore(): ItemsStoreInterface {
                 return state;
             })
 
-            let mockData: ItemInterface[] = [
-                {
-                    id: 1,
-                    name: "Item 1",
-                    selected: false
-                },
-                {
-                    id: 2,
-                    name: "Item 2",
-                    selected: false
-                },
-                {
-                    id: 3,
-                    name: "Item 3",
-                    selected: false
-                }
-            ]
+            // invoke our API cient fetchItems to load the data from an API end-point
+            const data = await apiClient.items.fetchItems();
 
-            setTimeout(() => {
-                writableItemsStore.update((state) => {
-                    state.items = mockData;
-                    state.loading = false;
-                    return state;
-                });
+            // set item data and loading to false
+            writableItemsStore.update((state) => {
+                state.items = data;
+                state.loading = false;
 
-                console.log('itemStore: loadItems: state updated')
-            }, 1000)
+                return state;
+            });
         },
 
         // action we invoke to toggle an item.selected property
